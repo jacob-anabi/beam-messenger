@@ -11,5 +11,5 @@ Currently only local machine communication is possible. To test the communicatio
 6. Compile the Client.java file ('javac Client.java')
 7. Run the following command 'java -Djavax.net.ssl.trustStore=truststore -Djavax.net.ssl.trustStorePassword=trustword Client'
 8. (OPTIONAL) You can add java '-Djavax.net.debug=ssl' before 'Client' in the previous command to see some nifty stuff
-9. Type a message to send in you Client window
-10. You can now see the message that was sent in the Server window
+9. Type a message to send in you Client or Server window and have comminications back and forth
+10. Type 'END' in both windows to close, or ^C
