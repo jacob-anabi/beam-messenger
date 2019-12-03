@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Server class 
  */
-public class testServer { 
+public class SSLServer { 
     static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
     static int i = 0; // client counter 
   
