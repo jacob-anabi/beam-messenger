@@ -2,7 +2,7 @@ import java.io.*;
 import javax.net.ssl.*; 
 import java.util.Scanner; 
   
-public class testClient { 
+public class SSLClient { 
     final static int serverPort = 9999;
   
     public static void main(String args[]) throws IOException { 
