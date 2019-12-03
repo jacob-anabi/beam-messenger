@@ -1,59 +1,58 @@
-import java.io.*;
-import javax.net.ssl.*;
+import java.io.*; 
+import javax.net.ssl.*; 
+import java.util.Scanner; 
+  
+public class testClient { 
+    final static int serverPort = 9999;
+  
+    public static void main(String args[]) throws IOException { 
+        Scanner scanner = new Scanner(System.in); 
+        String hostName = "localhost"; // getting hostname 
+          
+        // establish the connection 
+        SSLSocketFactory sslFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        SSLSocket sslClientSocket = (SSLSocket) sslFactory.createSocket(hostName, serverPort);
+          
+        DataInputStream dis = new DataInputStream(sslClientSocket.getInputStream()); 
+        DataOutputStream dos = new DataOutputStream(sslClientSocket.getOutputStream());
 
-public class SSLClient implements Runnable {
-  int portNumber = 9999;
-  String hostName = "localhost";
-  String inSentence = "";
-  String outSentence = "";
+        Runnable messageReader = new Runnable() {
+            @Override
+            public void run() { 
+                while (true) { 
+                    try { 
+                        // read the message sent to this client 
+                        String msg = dis.readUTF(); 
+                        System.out.println(msg); 
+                    } catch (IOException e) { 
 
-  BufferedReader inFromUser;
-  BufferedReader outFromUser;
-  DataOutputStream outToServer;
+                        e.printStackTrace(); 
+                    } 
+                } 
+            }
+        };
 
-  Thread t;
-
-  SSLSocketFactory sslFact;
-  SSLSocket sslClientSocket;
-
-  public SSLClient() {
-    try {
-      t = new Thread(this);
-
-      sslFact = (SSLSocketFactory) SSLSocketFactory.getDefault();
-      sslClientSocket = (SSLSocket) sslFact.createSocket(hostName, portNumber);
-      
-      t.start();
-    } catch(Exception exception) {
-    	exception.printStackTrace();
+        Runnable messageSender = new Runnable() {
+            @Override
+            public void run() { 
+                while (true) {
+                    String msg = scanner.nextLine(); 
+                    try { 
+                        dos.writeUTF(msg); 
+                    } catch (IOException e) { 
+                        e.printStackTrace(); 
+                    } 
+                } 
+            }
+        };
+  
+        // thread for sending messages 
+        Thread sendMessage = new Thread(messageSender); 
+          
+        // thread for reading messages 
+        Thread readMessage = new Thread(messageReader);
+        
+        sendMessage.start(); 
+        readMessage.start();
     }
-  }
-
-  @Override
-  public void run() {
-    try {
-      if (Thread.currentThread() == t) {
-        do {
-          inFromUser = new BufferedReader(new InputStreamReader(System.in));
-          inSentence = inFromUser.readLine();
-
-          outToServer = new DataOutputStream(sslClientSocket.getOutputStream());
-          outToServer.writeBytes(inSentence + '\n');
-        } while(!inSentence.equals("END"));
-      }
-      else {
-        do {
-          outFromUser = new BufferedReader(new InputStreamReader(sslClientSocket.getInputStream()));
-          outSentence = outFromUser.readLine();
-          System.out.println(outSentence);
-        } while(!outSentence.equals("END"));
-      }
-    } catch(Exception exception) {
-    	exception.printStackTrace();
-    }
-  }
-
-public static void main(String [] arstring) throws Exception {
-    new SSLClient();
-  }
-}
+} 
