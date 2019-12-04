@@ -5,14 +5,14 @@ Beam is a secure chat application that ensures private communications between pa
 1. Open a terminal window and 'cd' to the appropiate directory
 2. Compile the Server.java file ('javac SSLServer.java')
 3. Run the following command 'java -Djavax.net.ssl.keyStore=keystore -Djavax.net.ssl.keyStorePassword=password SSLServer'
-4. (OPTIONAL) You can add java '-Djavax.net.debug=ssl' before 'SSLServer' in the previous command to see some nifty stuff
+4. (OPTIONAL) You can add '-Djavax.net.debug=ssl' before 'SSLServer' in the previous command to see some nifty stuff
 5. The server should now be running using your machine's address
 
 # How to run (CLIENT)
 1. Open a terminal window and 'cd' to the appropiate directory
 2. Compile the Client.java file ('javac SSLClient.java')
 3. Run the following command 'java -Djavax.net.ssl.trustStore=truststore -Djavax.net.ssl.trustStorePassword=trustword SSLClient'
-4. (OPTIONAL) You can add java '-Djavax.net.debug=ssl' before 'SSLClient' in the previous command to see some nifty stuff
+4. (OPTIONAL) You can add '-Djavax.net.debug=ssl' before 'SSLClient' in the previous command to see some nifty stuff
 5. Now you can use the client commands listed below to communicate
 
 ## Client Commands
