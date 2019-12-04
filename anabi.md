@@ -9,3 +9,4 @@
 7. Fixed client log out issue (2019/12/03)
 8. Added documentation to README (2019/12/03)
 9. Fixed server error when user improperly disconnects from server (2019/12/03)
+10. Added example pictures to README (2019/12/03)
