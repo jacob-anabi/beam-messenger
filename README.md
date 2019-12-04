@@ -23,13 +23,13 @@ Beam is a secure chat application that ensures private communications between pa
 
 # Example
 ## Server Example
-![Server Example Picture](Resources/server-example.png)
+![Server Example Picture](resources/server-example.png)
 
 ## Client 0 - Edward Example
-![Client 0 - Edward Picture](Resources/client-0-edward-example.png)
+![Client 0 - Edward Picture](resources/client-0-edward-example.png)
 
 ## Client 1 - Alphonse Example
-![Client 1 - Alphonse Picture](Resources/client-0-edward-example.png)
+![Client 1 - Alphonse Picture](resources/client-0-edward-example.png)
 
 # NOTICE
 BEAM MESSENGER IS NOT SECURELY RIGOROUS ENOUGH TO BE USED IN COMMERCIAL APPLICATIONS. IT IS MEANT FOR DEMONSTRATION AND LEARNING PURPOSES ONLY.
