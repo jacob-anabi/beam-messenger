@@ -6,6 +6,8 @@ import java.util.Scanner;
  * @author Jacob Anabi <anabi@chapman.edu>
  * @author John Park <sanpark@chapman.edu>
  * @version 1.0
+ *
+ * SSLClient starts up a client and connects to a specified server.
  */  
 
 /**
@@ -26,6 +28,10 @@ public class SSLClient {
         DataInputStream dis = new DataInputStream(sslClientSocket.getInputStream()); 
         DataOutputStream dos = new DataOutputStream(sslClientSocket.getOutputStream());
 
+        /*
+         * messageReader
+         * Does the necessary work to read on the input stream for the client
+         */
         Runnable messageReader = new Runnable() {
             @Override
             public void run() { 
@@ -43,6 +49,10 @@ public class SSLClient {
             }
         };
 
+        /*
+         * messageSender
+         * Does the necessary work to write on the output stream for the client
+         */
         Runnable messageSender = new Runnable() {
             @Override
             public void run() { 
@@ -57,10 +67,10 @@ public class SSLClient {
             }
         };
   
-        // thread for sending messages 
+        // the thread for sending messages for the client
         Thread sendMessage = new Thread(messageSender); 
           
-        // thread for reading messages 
+        // the thread for reading messages for the client
         Thread readMessage = new Thread(messageReader);
         
         sendMessage.start(); 

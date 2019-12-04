@@ -2,11 +2,15 @@ import java.io.*;
 import java.util.*; 
 import javax.net.ssl.*;
 import java.util.regex.Pattern;
+import java.net.SocketException;
 
 /**
  * @author Jacob Anabi <anabi@chapman.edu>
  * @author John Park <sanpark@chapman.edu>
  * @version 1.0
+ *
+ * SSLServer starts up a server that enecrypts communication between parties using SSL/TLS.
+ * The ClientHandler class is necessary to handle multiple clients connecting to the same server.
  */
   
 /**
@@ -34,7 +38,7 @@ public class SSLServer {
             DataOutputStream dos = new DataOutputStream(sslClientSocket.getOutputStream()); 
               
             ClientHandler client = new ClientHandler(sslClientSocket, "client " + clientNumber, dis, dos); // Create a new handler object for handling this request
-            Thread t = new Thread(client); // Create a new Thread with this handler               
+            Thread t = new Thread(client); // Create a new Thread with this client handler               
             System.out.println("Adding client " + clientNumber + " to active client list"); 
             clients.add(client); // add this client to active clients list
    
@@ -54,7 +58,20 @@ class ClientHandler implements Runnable {
     final DataOutputStream dos; 
     SSLSocket clientSocket; 
     boolean isloggedin; 
-      
+    
+    /**
+     * ClientHandler Constructor
+     * The constructor for ClientHandler class.
+     * <p>
+     * The constructor for ClientHandler. Initializes clientSocket, 
+     * name, data input stream, and data output stream
+     * </p>
+     *
+     * @param clientSocket the client socket
+     * @param name the client's name
+     * @param dis the client's input stream
+     * @param dos the client's output stream
+     */
     public ClientHandler(SSLSocket clientSocket, String name, DataInputStream dis, DataOutputStream dos) { 
         this.dis = dis; 
         this.dos = dos;
@@ -63,6 +80,10 @@ class ClientHandler implements Runnable {
         this.isloggedin = true; 
     } 
   
+    /**
+     * ClientHandler run() method
+     * The run() method does most of the work on interpreting client messages and handling them.
+     */
     @Override
     public void run() { 
         String received; 
@@ -111,15 +132,23 @@ class ClientHandler implements Runnable {
                     }
                     else {
                         // search for the recipient in client list
-                        for (ClientHandler client : SSLServer.clients) { 
-                            // if found the recipient, write to its output stream 
-                            if (client.getName().equals(param) && client.isloggedin == true) { 
-                                client.dos.writeUTF(this.name + " : " + sentMessage); 
-                                break; 
-                            } 
+                        for (ClientHandler client : SSLServer.clients) {
+                            try {
+                                // if found the recipient, write to its output stream 
+                                if (client.getName().equals(param) && client.isloggedin == true) { 
+                                    client.dos.writeUTF(this.name + " : " + sentMessage); 
+                                    break; 
+                                }
+                            } catch (SocketException e) { // client did CTRL+C instead of properly exitting
+                                client.isloggedin = false;
+                                System.out.println("Removing " + client.getName() + " from the active client list"); 
+                                SSLServer.clients.remove(client);
+                            }
                         }
                     }
                 }
+            } catch (EOFException e) {
+                        break; // there are no more bytes to read
             } catch (IOException e) {             
                 e.printStackTrace(); 
             } 
@@ -134,7 +163,9 @@ class ClientHandler implements Runnable {
         } 
     }
 
-    // getters and setters
+    /*
+     * getters and setters
+     */
     public String getName() {
         return this.name;
     } 
