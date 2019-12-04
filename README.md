@@ -21,5 +21,15 @@ Beam is a secure chat application that ensures private communications between pa
 3. 'message'->reciepientName - send a message to a recipient with username recipientName
 4. exit - disconnect from server (can now safely use CTRL+C to terminate program without interfering with the server)
 
+# Example
+## Server Example
+![Server Example Picture](resources/server-example.png?raw=true "Server Example")
+
+## Client 0 - Edward Example
+![Client 0 - Edward Picture](resources/client-0-edward-example.png?raw=true "Client 0 - Edward Example")
+
+## Client 1 - Alphonse Example
+![Client 1 - Alphonse Picture](resources/client-0-edward-example.png?raw=true "Client 1 - Alphonse Example")
+
 # NOTICE
 BEAM MESSENGER IS NOT SECURELY RIGOROUS ENOUGH TO BE USED IN COMMERCIAL APPLICATIONS. IT IS MEANT FOR DEMONSTRATION AND LEARNING PURPOSES ONLY.

@@ -7,4 +7,5 @@
 5. Fixed multiple client broadcasting issue (2019/12/03)
 6. Clients can now send messages to each other (2019/12/03)
 7. Fixed client log out issue (2019/12/03)
-8. Added documentation to README
+8. Added documentation to README (2019/12/03)
+9. Fixed server error when user improperly disconnects from server (2019/12/03)
