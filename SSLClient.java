@@ -1,13 +1,23 @@
 import java.io.*; 
 import javax.net.ssl.*; 
 import java.util.Scanner; 
-  
+
+/**
+ * @author Jacob Anabi <anabi@chapman.edu>
+ * @author John Park <sanpark@chapman.edu>
+ * @version 1.0
+ */  
+
+/**
+ * SSLCLient class 
+ */  
 public class SSLClient { 
     final static int serverPort = 9999;
   
     public static void main(String args[]) throws IOException { 
         Scanner scanner = new Scanner(System.in); 
-        String hostName = "localhost"; // getting hostname 
+        System.out.println("Please enter a valid server address to connect to below:");
+        String hostName = scanner.nextLine(); // getting hostname 
           
         // establish the connection 
         SSLSocketFactory sslFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
@@ -19,15 +29,16 @@ public class SSLClient {
         Runnable messageReader = new Runnable() {
             @Override
             public void run() { 
-                while (true) { 
+                while (true) {
                     try { 
                         // read the message sent to this client 
                         String msg = dis.readUTF(); 
-                        System.out.println(msg); 
+                        System.out.println(msg);
+                    } catch (EOFException e) {
+                        break; // there are no more bytes to read
                     } catch (IOException e) { 
-
                         e.printStackTrace(); 
-                    } 
+                    }
                 } 
             }
         };
