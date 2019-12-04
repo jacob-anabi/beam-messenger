@@ -2,13 +2,19 @@ import java.io.*;
 import java.util.*; 
 import javax.net.ssl.*;
 import java.util.regex.Pattern;
+
+/**
+ * @author Jacob Anabi <anabi@chapman.edu>
+ * @author John Park <sanpark@chapman.edu>
+ * @version 1.0
+ */
   
 /**
- * Server class 
+ * SSLServer class 
  */
 public class SSLServer { 
     static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
-    static int i = 0; // client counter 
+    static int clientNumber = 0; // client counter 
   
     public static void main(String[] args) throws IOException { 
         int portNumber = 9999;
@@ -27,13 +33,13 @@ public class SSLServer {
             DataInputStream dis = new DataInputStream(sslClientSocket.getInputStream()); 
             DataOutputStream dos = new DataOutputStream(sslClientSocket.getOutputStream()); 
               
-            ClientHandler mtch = new ClientHandler(sslClientSocket,"client " + i, dis, dos); // Create a new handler object for handling this request
-            Thread t = new Thread(mtch); // Create a new Thread with this handler               
-            System.out.println("Adding this client to active client list"); 
-            clients.add(mtch); // add this client to active clients list
+            ClientHandler client = new ClientHandler(sslClientSocket, "client " + clientNumber, dis, dos); // Create a new handler object for handling this request
+            Thread t = new Thread(client); // Create a new Thread with this handler               
+            System.out.println("Adding client " + clientNumber + " to active client list"); 
+            clients.add(client); // add this client to active clients list
    
             t.start(); 
-            i++; 
+            clientNumber++; 
         } 
     } 
 } 
@@ -46,15 +52,15 @@ class ClientHandler implements Runnable {
     private String name; 
     final DataInputStream dis; 
     final DataOutputStream dos; 
-    SSLSocket s; 
+    SSLSocket clientSocket; 
     boolean isloggedin; 
       
-    public ClientHandler(SSLSocket s, String name, DataInputStream dis, DataOutputStream dos) { 
+    public ClientHandler(SSLSocket clientSocket, String name, DataInputStream dis, DataOutputStream dos) { 
         this.dis = dis; 
         this.dos = dos;
         this.name = name; 
-        this.s = s; 
-        this.isloggedin=true; 
+        this.clientSocket = clientSocket; 
+        this.isloggedin = true; 
     } 
   
     @Override
@@ -62,41 +68,42 @@ class ClientHandler implements Runnable {
         String received; 
         while (true)  { 
             try { 
-                received = dis.readUTF(); // receive the string
+                received = dis.readUTF(); // received message from client
+                
+                String[] splitMessage = received.split(Pattern.quote("->")); // break the string into message and recipient part, delimiter = ->
+                String sentMessage = splitMessage[0]; 
+                String param = splitMessage[splitMessage.length - 1];
                   
                 System.out.println(received); 
                   
-                if (received.equals("logout")) { 
-                    this.isloggedin = false; 
-                    this.s.close(); 
-                    break; 
+                if (sentMessage.equals("exit")) { 
+                    this.isloggedin = false;
+                    System.out.println("Removing " + this.name + " from the active client list"); 
+                    SSLServer.clients.remove(this);
+                    this.clientSocket.close();
+                    break;
                 }
                 
-                if (received.equals("whois")) {
-                    for (ClientHandler client : testServer.clients) {
+                else if (sentMessage.equals("whois")) {
+                    for (ClientHandler client : SSLServer.clients) {
                         if (!client.getName().equals(this.name)) {
-                            this.dos.writeUTF(client.getName());
+                            this.dos.writeUTF(client.getName()); // print out all names not the client who typed 'whois'
                         }
                         else {
-                            this.dos.writeUTF(client.getName() + " [YOU]");
+                            this.dos.writeUTF(client.getName() + " [YOU]"); // printing out the name of the client who typed 'whois'
                         }
                     }
                 }
                 else {
-                    // break the string into message and recipient part, delimiter = ->
-                    String[] splitMessage = received.split(Pattern.quote("->"));
-                    String sentMessage = splitMessage[0]; 
-                    String param = splitMessage[1];
-      
                     if (sentMessage.equals("chusr")) {
-                        String[] names = param.split(Pattern.quote(","));
+                        String[] names = param.split(Pattern.quote(",")); // break the param into original name and the new name, delimiter = ,
                         String orignalName = names[0]; 
                         String newName = names[1];
 
                         // search for the recipient in client list
-                        for (ClientHandler client : testServer.clients) { 
-                            // if the recipient is found, write on its output stream 
-                            if (client.getName().equals(orignalName) && client.isloggedin == true) { 
+                        for (ClientHandler client : SSLServer.clients) { 
+                            // making sure that only the client can change their name and also updating the name in the clients list
+                            if (client.getName().equals(orignalName) && client.isloggedin == true && this.name.equals(orignalName)) { 
                                 client.setName(newName);
                                 break; 
                             } 
@@ -104,8 +111,8 @@ class ClientHandler implements Runnable {
                     }
                     else {
                         // search for the recipient in client list
-                        for (ClientHandler client : testServer.clients) { 
-                            // if the recipient is found, write on its output stream 
+                        for (ClientHandler client : SSLServer.clients) { 
+                            // if found the recipient, write to its output stream 
                             if (client.getName().equals(param) && client.isloggedin == true) { 
                                 client.dos.writeUTF(this.name + " : " + sentMessage); 
                                 break; 
@@ -127,6 +134,7 @@ class ClientHandler implements Runnable {
         } 
     }
 
+    // getters and setters
     public String getName() {
         return this.name;
     } 
