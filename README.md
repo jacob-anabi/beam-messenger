@@ -29,7 +29,7 @@ Beam is a secure chat application that ensures private communications between pa
 ![Client 0 - Edward Picture](resources/client-0-edward-example.png?raw=true "Client 0 - Edward Example")
 
 ## Client 1 - Alphonse Example
-![Client 1 - Alphonse Picture](resources/client-0-edward-example.png?raw=true "Client 1 - Alphonse Example")
+![Client 1 - Alphonse Picture](resources/client-0-alphonse-example.png?raw=true "Client 1 - Alphonse Example")
 
 # NOTICE
 BEAM MESSENGER IS NOT SECURELY RIGOROUS ENOUGH TO BE USED IN COMMERCIAL APPLICATIONS. IT IS MEANT FOR DEMONSTRATION AND LEARNING PURPOSES ONLY.
